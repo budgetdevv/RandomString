@@ -10,12 +10,12 @@ namespace Benchmark
 {
     //[MemoryDiagnoser]
     [DisassemblyDiagnoser(exportCombinedDisassemblyReport: true)]
-    [Orderer(SummaryOrderPolicy.FastestToSlowest)]
+    [Orderer(SummaryOrderPolicy.FastestToSlowest)]  
     public unsafe class Benchmark
     {
         private Random Rand;
 
-        private const int RandStrLength = 100;
+        private const int RandStrLength = 1000;
 
         private const string CharPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_@!#$%^&*()+{}[]";
 
@@ -74,27 +74,27 @@ namespace Benchmark
             return new string(str, 0, RandStrLength);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public string RandStrTrumpMcD()
         {
+            var rand = Rand;
+            
             var RandStr = AllocString(RandStrLength);
 
-            var CharPoolLength = CharPool.Length;
-        
-            ref var CharPoolFirst = ref MemoryMarshal.GetReference(CharPool.AsSpan());
-        
             ref var Current = ref MemoryMarshal.GetReference(RandStr.AsSpan());
 
             ref var LastOffsetByOne = ref Unsafe.Add(ref Current, RandStrLength);
 
-            for (; !Unsafe.AreSame(ref Current, ref LastOffsetByOne)
-                 ; Current = ref Unsafe.Add(ref Current, 1))
+            var CharPoolLength = CharPool.Length;
+                
+            ref var CharPoolFirst = ref MemoryMarshal.GetReference(CharPool.AsSpan());
+                
+            for (; !Unsafe.AreSame(ref Current, ref LastOffsetByOne); Current = ref Unsafe.Add(ref Current, 1))
             {
-                var Index = Rand.Next(0, CharPoolLength);
-            
+                var Index = rand.Next(0, CharPoolLength);
+
                 Current = Unsafe.Add(ref CharPoolFirst, Index);
             }
-
             return RandStr;
         }
 
@@ -103,14 +103,14 @@ namespace Benchmark
         {
             return string.Create(RandStrLength, Rand, (RandStrSpan, rand) =>
             {
-                var CharPoolLength = CharPool.Length;
-                
-                ref var CharPoolFirst = ref MemoryMarshal.GetReference(CharPool.AsSpan());
-                
                 ref var Current = ref MemoryMarshal.GetReference(RandStrSpan);
 
                 ref var LastOffsetByOne = ref Unsafe.Add(ref Current, RandStrLength);
 
+                var CharPoolLength = CharPool.Length;
+                
+                ref var CharPoolFirst = ref MemoryMarshal.GetReference(CharPool.AsSpan());
+                
                 for (; !Unsafe.AreSame(ref Current, ref LastOffsetByOne); Current = ref Unsafe.Add(ref Current, 1))
                 {
                     var Index = rand.Next(0, CharPoolLength);

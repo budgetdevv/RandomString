@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Administrator\\Desktop\\RandomStrings\\Benchmark.csproj": {}
+    "C:\\Users\\Administrator\\Desktop\\RandomString\\Benchmark.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Administrator\\Desktop\\RandomStrings\\Benchmark.csproj": {
+    "C:\\Users\\Administrator\\Desktop\\RandomString\\Benchmark.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\RandomStrings\\Benchmark.csproj",
+        "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\RandomString\\Benchmark.csproj",
         "projectName": "Benchmark",
-        "projectPath": "C:\\Users\\Administrator\\Desktop\\RandomStrings\\Benchmark.csproj",
+        "projectPath": "C:\\Users\\Administrator\\Desktop\\RandomString\\Benchmark.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator\\Desktop\\RandomStrings\\obj\\",
+        "outputPath": "C:\\Users\\Administrator\\Desktop\\RandomString\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -20,7 +20,9 @@
           "net7.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://ci.appveyor.com/nuget/benchmarkdotnet": {},
+          "https://www.myget.org/F/discord-net/api/v3/index.json ": {}
         },
         "frameworks": {
           "net7.0": {
