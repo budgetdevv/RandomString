@@ -16,19 +16,36 @@ namespace Benchmark
         private Random Rand;
 
         private const int RandStrLength = 1000;
+        
+        //private const string CharPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_@!#$%^&*()+{}[]";
 
-        private const string CharPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_@!#$%^&*()+{}[]";
-
+        private string CharPool;
+        
         private StringBuilder SB;
         
         private delegate*<int, string> AllocString;
         
+        //https://www.asciitable.com/
+        const char CharPoolASCIIStart = (char) 64, CharPoolASCIIEnd = (char) 125;
         
         [GlobalSetup]
         public void GlobalSetup()
         {
             Rand = new Random(DateTime.UtcNow.Millisecond);
 
+            var CharPoolSize = CharPoolASCIIEnd - CharPoolASCIIStart + 1;
+
+            var CharPoolArr = new char[CharPoolSize];
+
+            var CurrentASCII = CharPoolASCIIStart;
+            
+            for (int I = 0; I < CharPoolArr.Length; I++)
+            {
+                CharPoolArr[I] = CurrentASCII++;
+            }
+
+            CharPool = new string(CharPoolArr);
+            
             SB = new StringBuilder(RandStrLength);
 
             SB.Length = RandStrLength;
@@ -118,6 +135,26 @@ namespace Benchmark
                     Current = Unsafe.Add(ref CharPoolFirst, Index);
                 }
             });
+        }
+        
+        [Benchmark]
+        public string RandStrTrumpMcD3()
+        {
+            var rand = Rand;
+            
+            var RandStr = AllocString(RandStrLength);
+
+            ref var Current = ref MemoryMarshal.GetReference(RandStr.AsSpan());
+
+            ref var LastOffsetByOne = ref Unsafe.Add(ref Current, RandStrLength);
+
+            for (; !Unsafe.AreSame(ref Current, ref LastOffsetByOne); Current = ref Unsafe.Add(ref Current, 1))
+            {
+                const int Min = CharPoolASCIIStart, Max = CharPoolASCIIEnd + 1;
+
+                Current = unchecked((char) rand.Next(Min, Max));
+            }
+            return RandStr;
         }
     }
 }
